@@ -5,7 +5,7 @@ import (
 	"net/url"
 )
 
-HTTPHandler returns an http.Handler based on the passed 'webFingerHandler'.
+// HTTPHandler returns an http.Handler based on the passed 'webFingerHandler'.
 //
 // You can think of it as a way of turning a webfinger.Handler into an http.Handler.
 func HTTPHandler(webFingerHandler Handler) http.Handler {
