@@ -34,7 +34,7 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 		return
 	}
 
-	var resource string
+	var queryValues url.Values
 	{
 		var httpRequestURL *url.URL = request.URL
 		if nil == httpRequestURL {
@@ -42,15 +42,18 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 			return
 		}
 
-		var query url.Values = httpRequestURL.Query()
-		if nil == query {
+		queryValues = httpRequestURL.Query()
+		if nil == queryValues {
 			httpError(responseWriter, http.StatusBadRequest)
 			return
 		}
+	}
 
+	var resource string
+	{
 		var resources []string
 		var found bool
-		resources, found = query["resource"]
+		resources, found = queryValues["resource"]
 		if !found {
 			httpError(responseWriter, http.StatusBadRequest)
 			return
@@ -62,6 +65,8 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 
 		resource = resources[0]
 	}
+
+	var rels []string = queryValues["rel"]
 
 	{
 		const contentType string = "application/jrd+json"
@@ -75,5 +80,5 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 		header.Add("Content-Type", contentType)
 	}
 
-	handler.ServeWebFinger(responseWriter, resource)
+	handler.ServeWebFinger(responseWriter, resource, rels...)
 }
