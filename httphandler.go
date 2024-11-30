@@ -77,6 +77,7 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 			return
 		}
 
+		header.Add("Access-Control-Allow-Origin", "*")
 		header.Add("Content-Type", contentType)
 	}
 
