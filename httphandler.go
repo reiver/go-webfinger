@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/reiver/go-etag"
 )
 
 // HTTPHandler returns an http.Handler based on the passed 'webFingerHandler'.
@@ -92,12 +94,6 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 		cacheDigest = fmt.Sprintf("sha-256=:%s:", base64.StdEncoding.EncodeToString(digest[:]))
 	}
 
-	var eTag string
-	{
-		var format string = fmt.Sprintf("sha256=0x%%0%dX", sha256.Size*2)
-		eTag = fmt.Sprintf(format, digest[:])
-	}
-
 	{
 		const contentType string = "application/jrd+json"
 
@@ -111,17 +107,18 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 		header.Add("Cache-Control", "max-age=907")
 		header.Add("Content-Digest", cacheDigest)
 		header.Add("Content-Type", contentType)
-		header.Add("ETag", `"`+eTag+`"`)
+	}
+
+	var eTag string
+	{
+		var format string = fmt.Sprintf("sha256=0x%%0%dX", sha256.Size*2)
+		eTag = fmt.Sprintf(format, digest[:])
 	}
 
 	{
-		var header http.Header = request.Header
-		if nil != header {
-			var ifNoneMatch string = header.Get("If-None-Match")
-			if eTag == ifNoneMatch {
-				responseWriter.WriteHeader(http.StatusNotModified)
-				return
-			}
+		var handled bool = etag.Handle(responseWriter, request, eTag)
+		if handled {
+			return
 		}
 	}
 
