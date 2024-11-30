@@ -115,6 +115,17 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 	}
 
 	{
+		var header http.Header = request.Header
+		if nil != header {
+			var ifNoneMatch string = header.Get("If-None-Match")
+			if eTag == ifNoneMatch {
+				responseWriter.WriteHeader(http.StatusNotModified)
+				return
+			}
+		}
+	}
+
+	{
 		responseWriter.WriteHeader(http.StatusOK)
 		responseWriter.Write(bytes)
 	}
