@@ -10,6 +10,27 @@ Online documentation, which includes examples, can be found at: http://godoc.org
 
 [![GoDoc](https://godoc.org/github.com/reiver/go-webfinger?status.svg)](https://godoc.org/github.com/reiver/go-webfinger)
 
+## Example
+
+Here is an example:
+
+```golang
+func serveWebFinger(responseWriter http.ResponseWriter, resource string, rels ...string) {
+	//@TODO
+}
+
+var webFingerHandler webfinger.Handler = webfinger.HandlerFunc(serveWebFinger)
+
+var httpHandler http.Handler = HTTPHandler(webFingerHandler)
+
+// ...
+
+var path string = webfinger.webFingerHandler // == "/.well-known/webfinger"
+
+// Replace this line of code with however you register handlers with your favorite HTTP mux.
+http.Handle(path, httpHandler)
+```
+
 ## Import
 
 To import package **webfinger** use `import` code like the follownig:
