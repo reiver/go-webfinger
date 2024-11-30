@@ -17,6 +17,14 @@ Here is an example:
 ```golang
 func serveWebFinger(responseWriter http.ResponseWriter, resource string, rels ...string) {
 	//@TODO
+
+	var response webfinger.Response
+
+	// ...
+
+	err := json.NewEncoder(responseWriter).Encode(response)
+
+	//@TODO
 }
 
 var webFingerHandler webfinger.Handler = webfinger.HandlerFunc(serveWebFinger)
