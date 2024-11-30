@@ -1,15 +1,11 @@
 package webfinger
 
-import (
-	"net/http"
-)
-
-// HandlerFunc can be used to turn a func(http.ResponseWriter,string) into a Handler.
-type HandlerFunc func(responseWriter http.ResponseWriter, resource string, rels ...string)
+// HandlerFunc can be used to turn a func(string,...string)([]byte,error) into a Handler.
+type HandlerFunc func(resource string, rels ...string) ([]byte, error)
 
 var _ Handler = HandlerFunc(nil)
 
-// ServeWebFinger calls fn(responseWriter, resource)
-func (fn HandlerFunc) ServeWebFinger(responseWriter http.ResponseWriter, resource string, rels ...string) {
-	fn(responseWriter, resource, rels...)
+// ServeWebFinger calls fn(rresource, rels...)
+func (fn HandlerFunc) ServeWebFinger(resource string, rels ...string) ([]byte, error) {
+	return fn(resource, rels...)
 }

@@ -1,6 +1,9 @@
 package webfinger
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -68,6 +71,33 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 
 	var rels []string = queryValues["rel"]
 
+	var bytes []byte
+	{
+		var err error
+
+		bytes, err = handler.ServeWebFinger(resource, rels...)
+		if nil != err {
+			httpError(responseWriter, http.StatusInternalServerError)
+			return
+		}
+	}
+
+	var digest [sha256.Size]byte
+	{
+		digest = sha256.Sum256(bytes)
+	}
+
+	var cacheDigest string
+	{
+		cacheDigest = fmt.Sprintf("sha-256=:%s:", base64.StdEncoding.EncodeToString(digest[:]))
+	}
+
+	var eTag string
+	{
+		var format string = fmt.Sprintf("sha256=0x%%0%dX", sha256.Size*2)
+		eTag = fmt.Sprintf(format, digest[:])
+	}
+
 	{
 		const contentType string = "application/jrd+json"
 
@@ -78,8 +108,14 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 		}
 
 		header.Add("Access-Control-Allow-Origin", "*")
+		header.Add("Cache-Control", "max-age=907")
+		header.Add("Content-Digest", cacheDigest)
 		header.Add("Content-Type", contentType)
+		header.Add("ETag", `"`+eTag+`"`)
 	}
 
-	handler.ServeWebFinger(responseWriter, resource, rels...)
+	{
+		responseWriter.WriteHeader(http.StatusOK)
+		responseWriter.Write(bytes)
+	}
 }
