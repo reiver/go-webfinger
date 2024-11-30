@@ -82,6 +82,7 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 			switch casted := err.(type) {
 			case ErrHTTP:
 				httpError(responseWriter, casted.ErrHTTP())
+				return
 			default:
 				httpError(responseWriter, http.StatusInternalServerError)
 				return
