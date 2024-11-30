@@ -50,7 +50,7 @@ import "github.com/reiver/go-webfinger"
 
 To install package **webfinger** do the following:
 ```
-GOPROXY=direct go get https://github.com/reiver/go-webfinger
+GOPROXY=direct go get github.com/reiver/go-webfinger
 ```
 
 ## Author
