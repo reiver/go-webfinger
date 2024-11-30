@@ -29,7 +29,7 @@ func serveWebFinger(responseWriter http.ResponseWriter, resource string, rels ..
 
 var webFingerHandler webfinger.Handler = webfinger.HandlerFunc(serveWebFinger)
 
-var httpHandler http.Handler = HTTPHandler(webFingerHandler)
+var httpHandler http.Handler = webfinger.HTTPHandler(webFingerHandler)
 
 // ...
 
