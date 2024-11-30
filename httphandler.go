@@ -79,8 +79,13 @@ func (receiver internalHTTPHandler) ServeHTTP(responseWriter http.ResponseWriter
 
 		bytes, err = handler.ServeWebFinger(resource, rels...)
 		if nil != err {
-			httpError(responseWriter, http.StatusInternalServerError)
-			return
+			switch casted := err.(type) {
+			case ErrHTTP:
+				httpError(responseWriter, casted.ErrHTTP())
+			default:
+				httpError(responseWriter, http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 
