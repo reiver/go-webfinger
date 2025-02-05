@@ -8,10 +8,10 @@ import (
 
 // Response represents a JSON Resource Descriptor (JRD) response.
 type Response struct {
-	Subject opt.Optional[string]
-	Aliases []string
-	Properties map[string]string
-	Links []Link
+	Subject opt.Optional[string] `json:"subject"`
+	Aliases []string             `json:"aliases"`
+	Properties map[string]string `json:"properties"`
+	Links []Link                 `json:"links"`
 }
 
 func (receiver Response) MarshalJSON() ([]byte, error) {

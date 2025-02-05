@@ -48,11 +48,11 @@ import (
 //
 // It is used with [Response].
 type Link struct {
-	Rel  opt.Optional[string]
-	Type opt.Optional[string]
-	HRef opt.Optional[string]
-	Titles map[string]string
-	Properties map[string]string
+	Rel  opt.Optional[string]    `json:"rel"`
+	Type opt.Optional[string]    `json:"type"`
+	HRef opt.Optional[string]    `json:"href"`
+	Titles map[string]string     `json:"titles"`
+	Properties map[string]string `json:"properties"`
 }
 
 var _ json.Marshaler = Link{}
