@@ -211,7 +211,7 @@ func TestResponse_MarshalJSON(t *testing.T) {
 			expected := test.Expected
 
 			if !bytes.Equal(expected, actual) {
-				t.Errorf("For test #%d, the actual marshaled-jsn is not what was expected.", testNumber)
+				t.Errorf("For test #%d, the actual marshaled-json is not what was expected.", testNumber)
 				t.Logf("EXPECTED: (%d) %q", len(expected), expected)
 				t.Logf("ACTUAL:   (%d) %q", len(actual), actual)
 				t.Logf("RESPONSE: %#v", test.Response)
