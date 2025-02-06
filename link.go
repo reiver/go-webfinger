@@ -2,6 +2,7 @@ package webfinger
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/reiver/go-opt"
 )
@@ -56,6 +57,46 @@ type Link struct {
 }
 
 var _ json.Marshaler = Link{}
+
+func (receiver Link) MarshalHTTPHeader() ([]byte, error) {
+	var buffer [256]byte
+	var bytes []byte = buffer[0:0]
+
+	var href string
+	{
+		var found bool
+
+		href, found = receiver.HRef.Get()
+		if !found {
+			return nil, nil
+		}
+	}
+
+//@TODO: is this the correct way to escape?
+	var escapedhref string = href
+	escapedhref = strings.ReplaceAll(escapedhref, `>`, `\>`)
+
+	bytes = append(bytes, `Link: <`...)
+	bytes = append(bytes, escapedhref...)
+	bytes = append(bytes, '>')
+
+	{
+		rel, found := receiver.HRef.Get()
+		if found {
+//@TODO: is this the correct way to escape?
+			var escapedrel string = rel
+			escapedrel = strings.ReplaceAll(escapedrel, `"`, `\"`)
+
+			bytes = append(bytes, `; rel="`...)
+			bytes = append(bytes, escapedrel...)
+			bytes = append(bytes, '"')
+		}
+	}
+
+
+	return bytes, nil
+}
+
 
 func (receiver Link) MarshalJSON() ([]byte, error) {
 	var buffer [256]byte

@@ -10,9 +10,47 @@ Online documentation, which includes examples, can be found at: http://godoc.org
 
 [![GoDoc](https://godoc.org/github.com/reiver/go-webfinger?status.svg)](https://godoc.org/github.com/reiver/go-webfinger)
 
-## Example
+## Client Examples
 
-Here is an example:
+Here is an example on how to make a WebFinger request:
+
+```golang
+host := "example.com"
+resource := "acct:reiver@mastodon.social"
+
+
+var response webfinger.Response
+err := webfinger.Get(&response, host, resource)
+```
+
+Alternatively, if you want to specify the example HTTPS URL, you can instead do something similar to:
+
+```golang
+url := "https://example.com/.well-known/webfinger?resource=acct:reiver@mastodon.social"
+
+var response webfinger.Response
+err := webfinger.GetRaw(&response, url)
+```
+
+## Server Examples
+
+If you want to create a WebFinger server, you can either do something similar to:
+
+```golang
+func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
+
+	// ...
+
+	var jrdBytes []byte = ???
+
+
+	// ...
+
+	webfinger.ServeJRDBytes(responseWriter, request, jrdBytes)
+}
+```
+
+Or, alternatively, you can do something similar to:
 
 ```golang
 func serveWebFinger(responseWriter http.ResponseWriter, resource string, rels ...string) {
