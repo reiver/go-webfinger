@@ -50,6 +50,35 @@ func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 }
 ```
 
+Note that you can create the `jrdBytes` in the example by using `webfinger.Response`'s `MarshalJSON()` method.
+I.e.,:
+
+```golang
+func ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
+
+	// ...
+
+	var response webfinger.Response
+
+	response.Subject = ???
+	response.Aliases = ???
+	response.Properties = ???
+	response.Links = ???
+
+	// ...
+
+	var jrdBytes []byte
+	var err error
+
+	jrdBytes, err = response.MarshalJSON()
+
+
+	// ...
+
+	webfinger.ServeJRDBytes(responseWriter, request, jrdBytes)
+}
+```
+
 Or, alternatively, you can do something similar to:
 
 ```golang
