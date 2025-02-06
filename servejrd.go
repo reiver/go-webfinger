@@ -22,8 +22,6 @@ func ServeJRDBytes(responseWriter http.ResponseWriter, request *http.Request, jr
 	}
 
 	{
-		const contentType string = "application/jrd+json"
-
 		var header http.Header = responseWriter.Header()
 		if nil == header {
 			httpError(responseWriter, http.StatusInternalServerError)
@@ -33,7 +31,7 @@ func ServeJRDBytes(responseWriter http.ResponseWriter, request *http.Request, jr
 		header.Add("Access-Control-Allow-Origin", "*")
 		header.Add("Cache-Control", "max-age=907")
 		header.Add("Content-Digest", cacheDigest)
-		header.Add("Content-Type", contentType)
+		header.Add("Content-Type", ContentTypeJRD)
 	}
 
 	var eTag string
